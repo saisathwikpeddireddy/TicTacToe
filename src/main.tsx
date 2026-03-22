@@ -52,6 +52,23 @@ createRoot(document.getElementById('root')!).render(
           footerActionLink: { color: '#0A84FF' },
           identityPreviewText: { color: '#ffffff' },
           identityPreviewEditButton: { color: '#0A84FF' },
+          userButtonPopoverCard: {
+            background: '#1c1c1e',
+            border: '1px solid rgba(255,255,255,0.08)',
+            boxShadow: '0 24px 80px rgba(0,0,0,0.9)',
+          },
+          userButtonPopoverActionButton: {
+            color: '#ffffff',
+          },
+          userButtonPopoverActionButtonText: {
+            color: '#ffffff',
+          },
+          userButtonPopoverActionButtonIcon: {
+            color: 'rgba(255,255,255,0.5)',
+          },
+          userButtonPopoverFooter: {
+            display: 'none',
+          },
           rootBox: { fontFamily: '-apple-system, BlinkMacSystemFont, system-ui, sans-serif' },
         },
       }}
