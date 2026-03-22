@@ -55,7 +55,7 @@ function Landing() {
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
         gap: 9,
-        opacity: 0.22,
+        opacity: 0.38,
         pointerEvents: 'none',
         marginBottom: 52,
       }}>
@@ -63,7 +63,7 @@ function Landing() {
           <div key={i} style={{
             width: 80,
             height: 80,
-            background: '#2c2c2e',
+            background: '#3a3a3c',
             borderRadius: 18,
             display: 'flex',
             alignItems: 'center',

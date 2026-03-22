@@ -80,10 +80,14 @@ body {
   animation: winPulse 1.2s ease-in-out infinite alternate;
 }
 
-/* Hide Clerk dev mode banners */
+/* Hide Clerk dev mode banners + footer */
+.cl-footer,
+.cl-footerAction,
+[class*="cl-footer"],
+[class*="cl-internal"],
+[class*="cl-powered"],
 [data-localization-key="developmentMode"],
-.cl-internal-b3fm6y,
-.cl-footer {
+[data-localization-key*="footer"] {
   display: none !important;
 }
 
