@@ -23,76 +23,69 @@ function Landing() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      gap: 32,
-      padding: 40,
+      justifyContent: 'center',
+      minHeight: '100vh',
+      padding: '40px 24px',
+      gap: 0,
     }}>
-      <div style={{ textAlign: 'center' }}>
-        <h1 style={{
-          fontSize: '2.4rem',
-          fontWeight: 300,
-          letterSpacing: '0.35em',
-          textTransform: 'uppercase',
-          color: '#c8c8d4',
-          marginBottom: 12,
-        }}>
-          Tic-Tac-Toe
-        </h1>
-        <p style={{ color: '#555', fontSize: '0.9rem', letterSpacing: '0.1em' }}>
-          Sign in to track your wins
-        </p>
-      </div>
+      <h1 style={{
+        fontSize: 'clamp(2.8rem, 8vw, 5rem)',
+        fontWeight: 700,
+        letterSpacing: '-0.03em',
+        lineHeight: 1.05,
+        textAlign: 'center',
+        marginBottom: 14,
+      }}>
+        Tic-Tac-Toe.
+      </h1>
 
-      {/* Preview board */}
+      <p style={{
+        fontSize: '1.15rem',
+        fontWeight: 400,
+        color: 'rgba(255,255,255,0.42)',
+        textAlign: 'center',
+        letterSpacing: '-0.01em',
+        marginBottom: 52,
+      }}>
+        Sign in to track your wins.
+      </p>
+
+      {/* Ghost preview board */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: 8,
-        opacity: 0.35,
+        gap: 9,
+        opacity: 0.1,
         pointerEvents: 'none',
+        marginBottom: 52,
       }}>
-        {['X','','O','','X','','O','','X'].map((val, i) => (
+        {['X', '', 'O', '', 'X', '', 'O', '', 'X'].map((val, i) => (
           <div key={i} style={{
             width: 80,
             height: 80,
-            background: '#1a1a24',
-            border: '1px solid #2a2a38',
-            borderRadius: 14,
+            background: '#1c1c1e',
+            borderRadius: 18,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '2rem',
-            fontWeight: 700,
-            color: val === 'X' ? '#6c63ff' : '#ff6584',
           }}>
-            {val}
+            {val === 'X' && (
+              <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+                <line x1="9" y1="9" x2="29" y2="29" stroke="#0A84FF" strokeWidth="4" strokeLinecap="round"/>
+                <line x1="29" y1="9" x2="9" y2="29" stroke="#0A84FF" strokeWidth="4" strokeLinecap="round"/>
+              </svg>
+            )}
+            {val === 'O' && (
+              <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+                <circle cx="19" cy="19" r="12" stroke="#FF9F0A" strokeWidth="4"/>
+              </svg>
+            )}
           </div>
         ))}
       </div>
 
       <SignInButton mode="modal">
-        <button style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-          padding: '14px 32px',
-          borderRadius: 50,
-          border: '1px solid #2a2a38',
-          background: '#1a1a24',
-          color: '#e0e0f0',
-          fontSize: '0.95rem',
-          letterSpacing: '0.05em',
-          cursor: 'pointer',
-          transition: 'all 0.2s',
-        }}
-        onMouseEnter={e => {
-          (e.currentTarget as HTMLButtonElement).style.borderColor = '#6c63ff'
-          ;(e.currentTarget as HTMLButtonElement).style.boxShadow = '0 0 20px rgba(108,99,255,0.15)'
-        }}
-        onMouseLeave={e => {
-          (e.currentTarget as HTMLButtonElement).style.borderColor = '#2a2a38'
-          ;(e.currentTarget as HTMLButtonElement).style.boxShadow = 'none'
-        }}
-        >
+        <button className="btn-primary">
           <GoogleIcon />
           Continue with Google
         </button>

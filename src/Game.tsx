@@ -39,7 +39,7 @@ export default function Game() {
     if (win) {
       setGameOver(true)
       setWinningCells(win)
-      setScores(s => ({ ...s, [current]: s[current as 'X' | 'O'] + 1 }))
+      setScores(s => ({ ...s, [current]: s[current as Player] + 1 }))
       return
     }
 
@@ -60,135 +60,158 @@ export default function Game() {
     setIsDraw(false)
   }, [])
 
-  const playerXLabel = user?.firstName ?? 'Player X'
+  const playerXLabel = user?.firstName ?? 'You'
   const statusText = gameOver
     ? isDraw
-      ? "It's a draw!"
-      : `${current === 'X' ? playerXLabel : 'Player O'} wins! 🎉`
+      ? "It's a draw"
+      : `${current === 'X' ? playerXLabel : 'Player O'} wins`
     : `${current === 'X' ? playerXLabel : 'Player O'}'s turn`
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 36 }}>
-      <h1 style={{
-        fontSize: '2rem',
-        fontWeight: 300,
-        letterSpacing: '0.3em',
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      width: '100%',
+      maxWidth: 420,
+      padding: '0 24px',
+    }}>
+      {/* Title */}
+      <p style={{
+        fontSize: '0.75rem',
+        fontWeight: 600,
+        letterSpacing: '0.08em',
         textTransform: 'uppercase',
-        color: '#c8c8d4',
+        color: 'rgba(255,255,255,0.3)',
+        marginBottom: 48,
       }}>
         Tic-Tac-Toe
-      </h1>
+      </p>
 
       {/* Scoreboard */}
-      <div style={{ display: 'flex', gap: 40 }}>
-        <ScoreCard
+      <div style={{ display: 'flex', width: '100%', marginBottom: 36 }}>
+        <ScoreColumn
           label={playerXLabel}
-          labelColor="#6c63ff"
           score={scores.X}
+          color="#0A84FF"
           active={!gameOver && current === 'X'}
+          align="left"
         />
-        <ScoreCard
+        <div style={{
+          width: 1,
+          background: 'rgba(255,255,255,0.08)',
+          margin: '4px 28px',
+        }} />
+        <ScoreColumn
           label="Player O"
-          labelColor="#ff6584"
           score={scores.O}
+          color="#FF9F0A"
           active={!gameOver && current === 'O'}
+          align="right"
         />
       </div>
 
       {/* Status */}
-      <div style={{
-        fontSize: '0.9rem',
-        letterSpacing: '0.1em',
-        color: gameOver ? '#6c63ff' : '#888',
-        height: 20,
-        transition: 'color 0.3s',
+      <p style={{
+        fontSize: '0.85rem',
+        fontWeight: 500,
+        color: 'rgba(255,255,255,0.35)',
+        marginBottom: 28,
+        height: 18,
+        letterSpacing: '-0.01em',
       }}>
         {statusText}
-      </div>
+      </p>
 
       {/* Board */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-        {board.map((val, idx) => {
-          const isWinning = winningCells.includes(idx)
-          return (
-            <Cell
-              key={idx}
-              value={val}
-              isWinning={isWinning}
-              onClick={() => handleClick(idx)}
-            />
-          )
-        })}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(3, 1fr)',
+        gap: 10,
+        marginBottom: 40,
+      }}>
+        {board.map((val, idx) => (
+          <Cell
+            key={idx}
+            value={val}
+            isWinning={winningCells.includes(idx)}
+            onClick={() => handleClick(idx)}
+          />
+        ))}
       </div>
 
-      <button
-        onClick={reset}
-        style={{
-          padding: '12px 40px',
-          borderRadius: 50,
-          border: '1px solid #2a2a38',
-          background: 'transparent',
-          color: '#888',
-          fontSize: '0.85rem',
-          letterSpacing: '0.15em',
-          textTransform: 'uppercase',
-          cursor: 'pointer',
-        }}
-        onMouseEnter={e => {
-          const btn = e.currentTarget
-          btn.style.background = '#1a1a24'
-          btn.style.borderColor = '#6c63ff'
-          btn.style.color = '#c8c8ff'
-        }}
-        onMouseLeave={e => {
-          const btn = e.currentTarget
-          btn.style.background = 'transparent'
-          btn.style.borderColor = '#2a2a38'
-          btn.style.color = '#888'
-        }}
-      >
+      <button className="btn-secondary" onClick={reset}>
         New Game
       </button>
     </div>
   )
 }
 
-function ScoreCard({ label, labelColor, score, active }: {
+function ScoreColumn({ label, score, color, active, align }: {
   label: string
-  labelColor: string
   score: number
+  color: string
   active: boolean
+  align: 'left' | 'right'
 }) {
   return (
     <div style={{
+      flex: 1,
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
-      gap: 4,
-      padding: '14px 28px',
-      borderRadius: 16,
-      background: '#1a1a24',
-      border: `1px solid ${active ? '#6c63ff' : '#2a2a38'}`,
-      boxShadow: active ? '0 0 20px rgba(108,99,255,0.15)' : 'none',
-      minWidth: 90,
-      transition: 'border-color 0.3s, box-shadow 0.3s',
+      alignItems: align === 'left' ? 'flex-start' : 'flex-end',
+      gap: 8,
     }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+        {active && align === 'right' && (
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: color }} />
+        )}
+        <span style={{
+          fontSize: '0.72rem',
+          fontWeight: 600,
+          letterSpacing: '0.07em',
+          textTransform: 'uppercase',
+          color: active ? color : 'rgba(255,255,255,0.28)',
+          transition: 'color 0.3s',
+          maxWidth: 130,
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        }}>
+          {label}
+        </span>
+        {active && align === 'left' && (
+          <div style={{ width: 6, height: 6, borderRadius: '50%', background: color }} />
+        )}
+      </div>
       <span style={{
-        fontSize: '0.7rem',
-        letterSpacing: '0.2em',
-        textTransform: 'uppercase',
-        color: labelColor,
-        maxWidth: 100,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
+        fontSize: '3.8rem',
+        fontWeight: 700,
+        lineHeight: 1,
+        letterSpacing: '-0.03em',
+        color: active ? '#fff' : 'rgba(255,255,255,0.2)',
+        transition: 'color 0.3s',
       }}>
-        {label}
-      </span>
-      <span style={{ fontSize: '2rem', fontWeight: 600, color: '#e0e0f0' }}>
         {score}
       </span>
     </div>
+  )
+}
+
+function XMark() {
+  return (
+    <svg className="mark-enter" width="54" height="54" viewBox="0 0 54 54" fill="none">
+      <line x1="13" y1="13" x2="41" y2="41" stroke="#0A84FF" strokeWidth="4.5" strokeLinecap="round"/>
+      <line x1="41" y1="13" x2="13" y2="41" stroke="#0A84FF" strokeWidth="4.5" strokeLinecap="round"/>
+    </svg>
+  )
+}
+
+function OMark() {
+  return (
+    <svg className="mark-enter" width="54" height="54" viewBox="0 0 54 54" fill="none">
+      <circle cx="27" cy="27" r="17" stroke="#FF9F0A" strokeWidth="4.5"/>
+    </svg>
   )
 }
 
@@ -200,44 +223,15 @@ function Cell({ value, isWinning, onClick }: {
   const isX = value === 'X'
   const isO = value === 'O'
 
+  let cls = 'cell'
+  if (value) cls += ' cell-taken'
+  if (isWinning && isX) cls += ' cell-winning-x win-pulse'
+  if (isWinning && isO) cls += ' cell-winning-o win-pulse'
+
   return (
-    <div
-      onClick={onClick}
-      style={{
-        width: 110,
-        height: 110,
-        background: isWinning ? '#1e1e30' : '#1a1a24',
-        border: `1px solid ${isWinning ? (isO ? '#ff6584' : '#6c63ff') : '#2a2a38'}`,
-        borderRadius: 18,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '2.8rem',
-        fontWeight: 700,
-        cursor: value ? 'default' : 'pointer',
-        color: isX ? '#6c63ff' : '#ff6584',
-        boxShadow: isWinning
-          ? `0 0 24px ${isO ? 'rgba(255,101,132,0.25)' : 'rgba(108,99,255,0.25)'}`
-          : 'none',
-        transition: 'background 0.2s, border-color 0.2s, transform 0.1s',
-        userSelect: 'none',
-      }}
-      onMouseEnter={e => {
-        if (!value && !isWinning) {
-          (e.currentTarget as HTMLDivElement).style.background = '#22223a'
-          ;(e.currentTarget as HTMLDivElement).style.borderColor = '#3a3a52'
-          ;(e.currentTarget as HTMLDivElement).style.transform = 'scale(1.03)'
-        }
-      }}
-      onMouseLeave={e => {
-        if (!value && !isWinning) {
-          (e.currentTarget as HTMLDivElement).style.background = '#1a1a24'
-          ;(e.currentTarget as HTMLDivElement).style.borderColor = '#2a2a38'
-          ;(e.currentTarget as HTMLDivElement).style.transform = 'scale(1)'
-        }
-      }}
-    >
-      {value}
+    <div className={cls} onClick={onClick}>
+      {isX && <XMark />}
+      {isO && <OMark />}
     </div>
   )
 }

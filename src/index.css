@@ -6,12 +6,11 @@
 
 body {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #0f0f13;
-  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #000;
+  font-family: -apple-system, 'SF Pro Display', 'SF Pro Text', BlinkMacSystemFont, system-ui, sans-serif;
   color: #fff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 #root {
@@ -20,4 +19,104 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Board cells */
+.cell {
+  width: 116px;
+  height: 116px;
+  background: #1c1c1e;
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.12s ease;
+  user-select: none;
+}
+
+.cell:hover:not(.cell-taken) {
+  background: #2c2c2e;
+  transform: scale(1.03);
+}
+
+.cell-taken {
+  cursor: default;
+}
+
+.cell-winning-x {
+  background: rgba(10, 132, 255, 0.14) !important;
+  box-shadow: 0 0 0 1.5px rgba(10, 132, 255, 0.45);
+}
+
+.cell-winning-o {
+  background: rgba(255, 159, 10, 0.14) !important;
+  box-shadow: 0 0 0 1.5px rgba(255, 159, 10, 0.45);
+}
+
+/* Mark entrance animation */
+@keyframes markIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.mark-enter {
+  animation: markIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Winning pulse */
+@keyframes winPulse {
+  from { opacity: 0.85; }
+  to   { opacity: 1; }
+}
+
+.win-pulse {
+  animation: winPulse 1.2s ease-in-out infinite alternate;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 32px;
+  border-radius: 980px;
+  border: none;
+  background: #fff;
+  color: #000;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: opacity 0.18s ease;
+}
+
+.btn-primary:hover {
+  opacity: 0.82;
+}
+
+.btn-secondary {
+  padding: 11px 28px;
+  border-radius: 980px;
+  border: none;
+  background: rgba(10, 132, 255, 0.14);
+  color: #0a84ff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease;
+  letter-spacing: -0.01em;
+}
+
+.btn-secondary:hover {
+  background: rgba(10, 132, 255, 0.24);
 }
