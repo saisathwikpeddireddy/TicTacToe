@@ -14,6 +14,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ClerkProvider
       publishableKey={publishableKey}
+      proxyUrl="https://tictactoe-kohl-alpha.vercel.app/clerk-proxy"
       afterSignOutUrl="/"
       appearance={{
         variables: {
