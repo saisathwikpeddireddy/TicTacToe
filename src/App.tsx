@@ -1,7 +1,12 @@
-import { Show, SignInButton, UserButton } from '@clerk/react'
+import { Show, UserButton, useClerk, AuthenticateWithRedirectCallback } from '@clerk/react'
 import Game from './Game'
 
 export default function App() {
+  // Handle OAuth redirect callback (e.g. after Google sign-in on Vercel)
+  if (window.location.search.includes('__clerk_status') || window.location.hash.includes('__clerk')) {
+    return <AuthenticateWithRedirectCallback />
+  }
+
   return (
     <>
       <Show when="signed-in">
@@ -18,6 +23,8 @@ export default function App() {
 }
 
 function Landing() {
+  const { openSignIn } = useClerk()
+
   return (
     <div style={{
       display: 'flex',
@@ -84,12 +91,10 @@ function Landing() {
         ))}
       </div>
 
-      <SignInButton mode="modal">
-        <button className="btn-primary">
-          <GoogleIcon />
-          Continue with Google
-        </button>
-      </SignInButton>
+      <button className="btn-primary" onClick={() => openSignIn()}>
+        <GoogleIcon />
+        Continue with Google
+      </button>
     </div>
   )
 }
