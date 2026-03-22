@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic-Tac-Toe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0f0f13;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #fff;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #c8c8d4;
+    }
+
+    .scoreboard {
+      display: flex;
+      gap: 40px;
+    }
+
+    .score-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 14px 28px;
+      border-radius: 16px;
+      background: #1a1a24;
+      border: 1px solid #2a2a38;
+      min-width: 90px;
+      transition: border-color 0.3s;
+    }
+
+    .score-card.active {
+      border-color: #6c63ff;
+      box-shadow: 0 0 20px rgba(108, 99, 255, 0.15);
+    }
+
+    .score-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #666;
+    }
+
+    .score-label.x { color: #6c63ff; }
+    .score-label.o { color: #ff6584; }
+
+    .score-value {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #e0e0f0;
+    }
+
+    .status {
+      font-size: 0.9rem;
+      letter-spacing: 0.1em;
+      color: #888;
+      height: 20px;
+      transition: color 0.3s;
+    }
+
+    .status.win { color: #6c63ff; }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .cell {
+      width: 110px;
+      height: 110px;
+      background: #1a1a24;
+      border: 1px solid #2a2a38;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, transform 0.1s;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cell:hover:not(.taken) {
+      background: #22223a;
+      border-color: #3a3a52;
+      transform: scale(1.03);
+    }
+
+    .cell.taken {
+      cursor: default;
+    }
+
+    .cell .mark {
+      opacity: 0;
+      transform: scale(0.4) rotate(-10deg);
+      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .cell .mark.visible {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+    }
+
+    .cell.x-mark .mark { color: #6c63ff; }
+    .cell.o-mark .mark { color: #ff6584; }
+
+    .cell.winning {
+      background: #1e1e30;
+      border-color: #6c63ff;
+      box-shadow: 0 0 24px rgba(108, 99, 255, 0.2);
+      animation: pulse 1s ease infinite alternate;
+    }
+
+    .cell.winning.o-mark {
+      border-color: #ff6584;
+      box-shadow: 0 0 24px rgba(255, 101, 132, 0.2);
+    }
+
+    @keyframes pulse {
+      from { box-shadow: 0 0 12px rgba(108, 99, 255, 0.2); }
+      to   { box-shadow: 0 0 28px rgba(108, 99, 255, 0.4); }
+    }
+
+    .reset-btn {
+      padding: 12px 40px;
+      border-radius: 50px;
+      border: 1px solid #2a2a38;
+      background: transparent;
+      color: #888;
+      font-size: 0.85rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .reset-btn:hover {
+      background: #1a1a24;
+      border-color: #6c63ff;
+      color: #c8c8ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tic-Tac-Toe</h1>
+
+    <div class="scoreboard">
+      <div class="score-card active" id="card-x">
+        <span class="score-label x">Player X</span>
+        <span class="score-value" id="score-x">0</span>
+      </div>
+      <div class="score-card" id="card-o">
+        <span class="score-label o">Player O</span>
+        <span class="score-value" id="score-o">0</span>
+      </div>
+    </div>
+
+    <div class="status" id="status">Player X's turn</div>
+
+    <div class="board" id="board">
+      <div class="cell" data-index="0"><span class="mark"></span></div>
+      <div class="cell" data-index="1"><span class="mark"></span></div>
+      <div class="cell" data-index="2"><span class="mark"></span></div>
+      <div class="cell" data-index="3"><span class="mark"></span></div>
+      <div class="cell" data-index="4"><span class="mark"></span></div>
+      <div class="cell" data-index="5"><span class="mark"></span></div>
+      <div class="cell" data-index="6"><span class="mark"></span></div>
+      <div class="cell" data-index="7"><span class="mark"></span></div>
+      <div class="cell" data-index="8"><span class="mark"></span></div>
+    </div>
+
+    <button class="reset-btn" id="reset">New Game</button>
+  </div>
+
+  <script>
+    const WINS = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+
+    let board = Array(9).fill(null);
+    let current = 'X';
+    let gameOver = false;
+    let scores = { X: 0, O: 0 };
+
+    const cells = document.querySelectorAll('.cell');
+    const status = document.getElementById('status');
+    const scoreX = document.getElementById('score-x');
+    const scoreO = document.getElementById('score-o');
+    const cardX = document.getElementById('card-x');
+    const cardO = document.getElementById('card-o');
+
+    function setStatus(text, win = false) {
+      status.textContent = text;
+      status.className = 'status' + (win ? ' win' : '');
+    }
+
+    function updateActiveCard() {
+      cardX.classList.toggle('active', current === 'X');
+      cardO.classList.toggle('active', current === 'O');
+    }
+
+    function checkWin() {
+      for (const [a, b, c] of WINS) {
+        if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+          return [a, b, c];
+        }
+      }
+      return null;
+    }
+
+    function handleClick(e) {
+      const cell = e.currentTarget;
+      const idx = parseInt(cell.dataset.index);
+      if (gameOver || board[idx]) return;
+
+      board[idx] = current;
+      cell.classList.add('taken', current === 'X' ? 'x-mark' : 'o-mark');
+      const mark = cell.querySelector('.mark');
+      mark.textContent = current;
+      requestAnimationFrame(() => mark.classList.add('visible'));
+
+      const win = checkWin();
+      if (win) {
+        gameOver = true;
+        scores[current]++;
+        scoreX.textContent = scores.X;
+        scoreO.textContent = scores.O;
+        win.forEach(i => cells[i].classList.add('winning'));
+        setStatus(`Player ${current} wins! 🎉`, true);
+        cardX.classList.remove('active');
+        cardO.classList.remove('active');
+        return;
+      }
+
+      if (board.every(Boolean)) {
+        gameOver = true;
+        setStatus("It's a draw!");
+        cardX.classList.remove('active');
+        cardO.classList.remove('active');
+        return;
+      }
+
+      current = current === 'X' ? 'O' : 'X';
+      setStatus(`Player ${current}'s turn`);
+      updateActiveCard();
+    }
+
+    function reset() {
+      board = Array(9).fill(null);
+      current = 'X';
+      gameOver = false;
+      cells.forEach(cell => {
+        cell.className = 'cell';
+        const mark = cell.querySelector('.mark');
+        mark.textContent = '';
+        mark.className = 'mark';
+      });
+      setStatus("Player X's turn");
+      updateActiveCard();
+    }
+
+    cells.forEach(cell => cell.addEventListener('click', handleClick));
+    document.getElementById('reset').addEventListener('click', reset);
+  </script>
+</body>
+</html>
