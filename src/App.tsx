@@ -1,4 +1,4 @@
-import { Show, SignInButton, UserButton, useUser } from '@clerk/react'
+import { Show, SignInButton, UserButton } from '@clerk/react'
 import Game from './Game'
 
 export default function App() {
