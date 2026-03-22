@@ -80,6 +80,13 @@ body {
   animation: winPulse 1.2s ease-in-out infinite alternate;
 }
 
+/* Hide Clerk dev mode banners */
+[data-localization-key="developmentMode"],
+.cl-internal-b3fm6y,
+.cl-footer {
+  display: none !important;
+}
+
 /* Buttons */
 .btn-primary {
   display: inline-flex;

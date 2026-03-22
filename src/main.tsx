@@ -69,6 +69,9 @@ createRoot(document.getElementById('root')!).render(
           userButtonPopoverFooter: {
             display: 'none',
           },
+          footer: {
+            display: 'none',
+          },
           userPreviewMainIdentifier: {
             color: '#ffffff',
           },
