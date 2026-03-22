@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useUser } from '@clerk/react'
 
 const WINS = [
@@ -27,6 +27,7 @@ export default function Game() {
   const [gameOver, setGameOver] = useState(false)
   const [winningCells, setWinningCells] = useState<number[]>([])
   const [isDraw, setIsDraw] = useState(false)
+  const [nameO, setNameO] = useState('Player O')
 
   const handleClick = useCallback((idx: number) => {
     if (gameOver || board[idx]) return
@@ -64,8 +65,8 @@ export default function Game() {
   const statusText = gameOver
     ? isDraw
       ? "It's a draw"
-      : `${current === 'X' ? playerXLabel : 'Player O'} wins`
-    : `${current === 'X' ? playerXLabel : 'Player O'}'s turn`
+      : `${current === 'X' ? playerXLabel : nameO} wins`
+    : `${current === 'X' ? playerXLabel : nameO}'s turn`
 
   return (
     <div style={{
@@ -96,6 +97,7 @@ export default function Game() {
           color="#0A84FF"
           active={!gameOver && current === 'X'}
           align="left"
+          editable={false}
         />
         <div style={{
           width: 1,
@@ -103,11 +105,13 @@ export default function Game() {
           margin: '4px 28px',
         }} />
         <ScoreColumn
-          label="Player O"
+          label={nameO}
           score={scores.O}
           color="#FF9F0A"
           active={!gameOver && current === 'O'}
           align="right"
+          editable
+          onLabelChange={setNameO}
         />
       </div>
 
@@ -147,13 +151,42 @@ export default function Game() {
   )
 }
 
-function ScoreColumn({ label, score, color, active, align }: {
+function ScoreColumn({ label, score, color, active, align, editable, onLabelChange }: {
   label: string
   score: number
   color: string
   active: boolean
   align: 'left' | 'right'
+  editable?: boolean
+  onLabelChange?: (v: string) => void
 }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState(label)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => { setDraft(label) }, [label])
+  useEffect(() => { if (editing) inputRef.current?.select() }, [editing])
+
+  const commit = () => {
+    setEditing(false)
+    const trimmed = draft.trim() || label
+    setDraft(trimmed)
+    onLabelChange?.(trimmed)
+  }
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: '0.72rem',
+    fontWeight: 600,
+    letterSpacing: '0.07em',
+    textTransform: 'uppercase',
+    color: active ? color : 'rgba(255,255,255,0.28)',
+    transition: 'color 0.3s',
+    maxWidth: 130,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+  }
+
   return (
     <div style={{
       flex: 1,
@@ -166,20 +199,37 @@ function ScoreColumn({ label, score, color, active, align }: {
         {active && align === 'right' && (
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: color }} />
         )}
-        <span style={{
-          fontSize: '0.72rem',
-          fontWeight: 600,
-          letterSpacing: '0.07em',
-          textTransform: 'uppercase',
-          color: active ? color : 'rgba(255,255,255,0.28)',
-          transition: 'color 0.3s',
-          maxWidth: 130,
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-        }}>
-          {label}
-        </span>
+        {editable && editing ? (
+          <input
+            ref={inputRef}
+            value={draft}
+            onChange={e => setDraft(e.target.value)}
+            onBlur={commit}
+            onKeyDown={e => { if (e.key === 'Enter') commit() }}
+            maxLength={16}
+            style={{
+              ...labelStyle,
+              background: 'transparent',
+              border: 'none',
+              borderBottom: `1px solid ${color}`,
+              outline: 'none',
+              width: 100,
+              color: color,
+              padding: '0 0 2px',
+            }}
+          />
+        ) : (
+          <span
+            style={{
+              ...labelStyle,
+              cursor: editable ? 'pointer' : 'default',
+            }}
+            title={editable ? 'Click to edit name' : undefined}
+            onClick={() => editable && setEditing(true)}
+          >
+            {label}
+          </span>
+        )}
         {active && align === 'left' && (
           <div style={{ width: 6, height: 6, borderRadius: '50%', background: color }} />
         )}

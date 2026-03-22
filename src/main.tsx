@@ -69,6 +69,12 @@ createRoot(document.getElementById('root')!).render(
           userButtonPopoverFooter: {
             display: 'none',
           },
+          userPreviewMainIdentifier: {
+            color: '#ffffff',
+          },
+          userPreviewSecondaryIdentifier: {
+            color: 'rgba(255,255,255,0.55)',
+          },
           rootBox: { fontFamily: '-apple-system, BlinkMacSystemFont, system-ui, sans-serif' },
         },
       }}
